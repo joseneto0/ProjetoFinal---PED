@@ -1,10 +1,14 @@
 from faker import Faker
 import re
+from tabela import *
+from time import sleep
+from caminho import *
 
 class Dispositivos:
-    def __init__(self, ip, mac):
+    def __init__(self, ip, mac, identificador):
         self.ip = ip
         self.mac = mac
+        self.identificador = identificador
 
     @property
     def ip(self):
@@ -23,6 +27,14 @@ class Dispositivos:
         assert self.Validar_MAC(mac) == True, 'MAC Inválido'
         self.__mac = mac
 
+    @property
+    def identificador(self):
+        return self.__identificador
+
+    @identificador.setter
+    def identificador(self, identificador):
+        self.__identificador = identificador
+
     def Validar_MAC(self, str):
         regex = ("^([0-9A-Fa-f]{2}[:-])" + "{5}([0-9A-Fa-f]{2})|" + "([0-9a-fA-F]{4}\\." + "[0-9a-fA-F]{4}\\." + "[0-9a-fA-F]{4})$")
         p = re.compile(regex)
@@ -31,19 +43,16 @@ class Dispositivos:
         else:
             return False
 
+    def __str__(self):
+        return str(self.identificador)
+
+    def __repr__(self):
+        return str(self)
+
 class Computador(Dispositivos):
-    def __init__(self, ip, mac, nome):
-        super().__init__(ip, mac)
-        self.nome = nome
-        self.tabela_arp = []
-
-    @property
-    def nome(self):
-        return self.__nome
-
-    @nome.setter
-    def nome(self, nome):
-        self.__nome = nome
+    def __init__(self, ip, mac, identificador):
+        super().__init__(ip, mac, identificador)
+        self.tabela_arp = TabelaHash(30)
 
     @property
     def tabela_arp(self):
@@ -52,20 +61,26 @@ class Computador(Dispositivos):
     @tabela_arp.setter
     def tabela_arp(self, tabela_arp):
         self.__tabela_arp = tabela_arp
+    
+    def adicionar_tabela_arp(self, ip, mac):
+        assert self.Validar_MAC(mac) == True, 'MAC Inválido'
+        assert self.tabela_arp.contains(ip) == False, 'IP já vinculado a um endereço MAC'
+        return self.tabela_arp.put(ip, mac)
+    
+    def getMac(self, ip):
+        if self.tabela_arp.contains(ip) == True:
+            return self.tabela_arp.get(ip)
+        else:
+            return False
 
-    def adicionar_tabela_arp(self, lista):
-        for i in lista:
-            ip, mac = i.split('|')
-            assert self.Validar_MAC(mac) == True, 'MAC Invalido na Inserção'
-            macs = [i[(i.index('|')+1):] for i in self.tabela_arp]
-            ips = [i[:((i.index('|')))] for i in self.tabela_arp]
-            if mac not in macs and ip not in ips:
-                self.tabela_arp.append(i)
+    def __hash__(self):
+        return hash(self.ip)
 
 class Switch(Dispositivos):
-    def __init__(self, ip, mac, qtd_portas=4):
-        super().__init__(ip, mac)
+    def __init__(self, ip, mac, identificador, qtd_portas=24):
+        super().__init__(ip, mac, identificador)
         self.qtd_portas = qtd_portas
+        self.tabela_roteamento = TabelaHash(60)
 
     @property
     def tabela_roteamento(self):
@@ -82,14 +97,10 @@ class Switch(Dispositivos):
     @qtd_portas.setter
     def qtd_portas(self, qtd_portas):
         assert qtd_portas in [4, 8, 16, 24], 'Porta Incorreta. Tente Novamente [4, 8, 16, 24]'
-        self._qtd_portas = qtd_portas
+        self.__qtd_portas = qtd_portas
 
-if __name__ == '__main__':
-    try:
-        fake = Faker()
-        pc1 = Computador(fake.ipv4(), fake.mac_address(), 'zezin')
-        for i in range(2):
-            pc1.adicionar_tabela_arp([f'{fake.ipv4()}|{fake.mac_address()}'])
-        print(pc1.tabela_arp)
-    except AssertionError as erro:
-        print(erro)
+    def adicionar_tabela_roteamento(self, porta, mac):
+        assert self.tabela_roteamento.contains(porta) == False, f'Porta {porta} já referenciada ao MAC: {self.tabela_roteamento.get(porta)}'
+        assert len(self.tabela_roteamento) < self.qtd_portas, 'Portas do Switch Lotadas'
+        if self.tabela_roteamento.verifica_mac_repetido(mac) == False:
+            return self.tabela_roteamento.put(porta, mac)

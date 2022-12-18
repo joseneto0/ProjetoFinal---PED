@@ -69,7 +69,7 @@ class Computador(Dispositivos):
     
     def getMac(self, ip):
         if self.tabela_arp.contains(ip) == True:
-            return self.tabela_arp.get(ip)
+            return f'MAC: {self.tabela_arp.get(ip)}'
         else:
             return False
 
@@ -81,6 +81,7 @@ class Switch(Dispositivos):
         super().__init__(ip, mac, identificador)
         self.qtd_portas = qtd_portas
         self.tabela_roteamento = TabelaHash(60)
+        self.porta_atual = 0
 
     @property
     def tabela_roteamento(self):
@@ -99,7 +100,10 @@ class Switch(Dispositivos):
         assert qtd_portas in [4, 8, 16, 24], 'Porta Incorreta. Tente Novamente [4, 8, 16, 24]'
         self.__qtd_portas = qtd_portas
 
-    def adicionar_tabela_roteamento(self, porta, mac):
+    def adicionar_tabela_roteamento(self, mac, porta=None):
+        if porta is None:
+            porta = self.porta_atual
+            self.porta_atual += 1
         assert self.tabela_roteamento.contains(porta) == False, f'Porta {porta} já referenciada ao MAC: {self.tabela_roteamento.get(porta)}'
         assert len(self.tabela_roteamento) < self.qtd_portas, 'Portas do Switch Lotadas'
         if self.tabela_roteamento.verifica_mac_repetido(mac) == False:

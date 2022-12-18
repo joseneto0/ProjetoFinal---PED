@@ -23,6 +23,23 @@ class Grafo:
         if not self.direcionado:
             self.adj[v].add(u)
 
+    def busca_ip(self, fonte, ip):
+        visitados, fila = set(), [fonte]
+        while fila:
+            vertice = fila.pop(0)
+            print(f'Navegando... Atualmente no {vertice}')
+            sleep(0.7)
+            if vertice.ip == ip:
+                print(f'IP encontrado no {vertice}')
+                if fonte.tabela_arp.contains(hash(ip)) == False:
+                    fonte.adicionar_tabela_arp(hash(ip), vertice.mac)
+                return
+            visitados.add(vertice)
+            for vizinho in self[vertice]:
+                if vizinho not in visitados:
+                    visitados.add(vizinho)
+                    fila.append(vizinho)
+
     def existe_aresta(self, u, v):
         return u in self.adj and v in self.adj[u]
 

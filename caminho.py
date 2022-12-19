@@ -15,7 +15,8 @@ class Grafo:
 
     def adiciona_arestas(self, arestas):
         for u, v in arestas:
-            assert u.__class__.__name__ == 'Switch' and v.__class__.__name__ == 'Computador' or u.__class__.__name__ == 'Switch' and v.__class__.__name__ == 'Switch', 'Só é permitido conexões entre PCs e Switchs (Seguindo a Ordem Switch-'
+            assert u.__class__.__name__ == 'Switch' and v.__class__.__name__ == 'Computador' or u.__class__.__name__ == 'Switch' and v.__class__.__name__ == 'Switch', 'Só é permitido conexões entre PCs e Switchs (Seguindo a Ordem Switch-PC)'
+            u.adicionar_tabela_roteamento(v.mac)
             self.adiciona_arco(u, v)
 
     def adiciona_arco(self, u, v):
@@ -28,7 +29,7 @@ class Grafo:
         while fila:
             vertice = fila.pop(0)
             print(f'Navegando... Atualmente no {vertice}')
-            sleep(0.7)
+            sleep(1)
             if vertice.ip == ip:
                 print(f'IP encontrado no {vertice}')
                 if fonte.tabela_arp.contains(hash(ip)) == False:

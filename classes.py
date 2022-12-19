@@ -67,11 +67,25 @@ class Computador(Dispositivos):
         assert self.tabela_arp.contains(ip) == False, 'IP já vinculado a um endereço MAC'
         return self.tabela_arp.put(ip, mac)
     
-    def getMac(self, ip):
+    def getMac(self, ip, grafo):
         if self.tabela_arp.contains(ip) == True:
             return f'MAC: {self.tabela_arp.get(ip)}'
         else:
-            return False
+            visitados, fila = set(), [self]
+            while fila:
+                vertice = fila.pop(0)
+                print(f'Navegando... Atualmente no {vertice}')
+                sleep(1)
+                if hash(vertice.ip) == ip:
+                    print(f'IP encontrado no {vertice}')
+                    if self.tabela_arp.contains(hash(ip)) == False:
+                        self.adicionar_tabela_arp(hash(ip), vertice.mac)
+                    return
+                visitados.add(vertice)
+                for vizinho in grafo[vertice]:
+                    if vizinho not in visitados:
+                        visitados.add(vizinho)
+                        fila.append(vizinho)
 
     def __hash__(self):
         return hash(self.ip)
@@ -81,7 +95,7 @@ class Switch(Dispositivos):
         super().__init__(ip, mac, identificador)
         self.qtd_portas = qtd_portas
         self.tabela_roteamento = TabelaHash(60)
-        self.porta_atual = 0
+        self.porta_atual = 1
 
     @property
     def tabela_roteamento(self):

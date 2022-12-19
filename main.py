@@ -3,20 +3,16 @@ from caminho import *
 import csv
 from imports import *
 
-for i in computador:
-    print(i)
-print()
-for linha in switch:
-    print(linha)
-
 try:
     fake = Faker()
-    pc1 = Computador(fake.ipv4(), fake.mac_address(), 'PC Zezin')
-    pc2 = Computador(fake.ipv4(), fake.mac_address(), 'PC Matheus')
-    pc3 = Computador("192.168.10.1", fake.mac_address(), 'PC Joanderson')
-    pc4 = Computador(fake.ipv4(), fake.mac_address(), 'PC Samuel')
-    sw1 = Switch(fake.ipv4(), fake.mac_address(), 'SW01', 24)
-    sw2 = Switch(fake.ipv4(), fake.mac_address(), 'SW02', 24)
+    for i in range(5):
+        a = i +1
+        globals()['pc%s' % a] = Computador(computador[i]['ip'], computador[i]['mac'], computador[i]['nome'])
+    
+    for s in range(2):
+        a = s + 1
+        globals()['sw%s' % a] = Switch(switch[s]['ip'], switch[s]['mac'], 'SW0'+str(a), 24)
+
     caminho = Grafo([], direcionado=False)
     caminho.adiciona_arestas({(sw1, pc1)})
     caminho.adiciona_arestas({(sw1, pc2)})

@@ -28,6 +28,7 @@ class Grafo:
         visitados, fila = set(), [fonte]
         while fila:
             vertice = fila.pop(0)
+            #Resposta de 8.8.8.8: bytes=32 tempo=45ms TTL=52
             print(f'Navegando... Atualmente no {vertice}')
             sleep(1)
             if vertice.ip == ip:

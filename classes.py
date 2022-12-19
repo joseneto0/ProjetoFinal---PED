@@ -16,6 +16,7 @@ class Dispositivos:
 
     @ip.setter
     def ip(self, ip):
+        assert self.Validar_IP(ip) == True, "Ip Invalido, adicione um ip válido!"
         self.__ip = ip
 
     @property
@@ -24,7 +25,7 @@ class Dispositivos:
 
     @mac.setter
     def mac(self, mac):
-        assert self.Validar_MAC(mac) == True, 'MAC Inválido'
+        assert self.Validar_MAC(mac) == True, 'MAC Inválido, adicione um MAC válido!'
         self.__mac = mac
 
     @property
@@ -34,6 +35,14 @@ class Dispositivos:
     @identificador.setter
     def identificador(self, identificador):
         self.__identificador = identificador
+
+    def Validar_IP(self,ip):
+        regex = (r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$')
+        p = re.compile(regex)
+        if(re.search(p, ip)):
+            return True
+        else:
+            return False
 
     def Validar_MAC(self, str):
         regex = ("^([0-9A-Fa-f]{2}[:-])" + "{5}([0-9A-Fa-f]{2})|" + "([0-9a-fA-F]{4}\\." + "[0-9a-fA-F]{4}\\." + "[0-9a-fA-F]{4})$")
@@ -74,10 +83,10 @@ class Computador(Dispositivos):
             visitados, fila = set(), [self]
             while fila:
                 vertice = fila.pop(0)
-                print(f'Navegando... Atualmente no {vertice}')
+                print(f'Resposta de: ({vertice}) bytes=32 TTL=52')
                 sleep(1)
                 if hash(vertice.ip) == ip:
-                    print(f'IP encontrado no {vertice}')
+                    print(f'IP encontrado no ({vertice})')
                     if self.tabela_arp.contains(hash(ip)) == False:
                         self.adicionar_tabela_arp(hash(ip), vertice.mac)
                     return

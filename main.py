@@ -4,22 +4,23 @@ import csv
 from imports import *
 
 try:
-    fake = Faker()
-    for i in range(5):
-        a = i +1
-        globals()['pc%s' % a] = Computador(computador[i]['ip'], computador[i]['mac'], computador[i]['nome'])
-    
-    for s in range(2):
-        a = s + 1
-        globals()['sw%s' % a] = Switch(switch[s]['ip'], switch[s]['mac'], 'SW0'+str(a), 24)
-
     caminho = Grafo([], direcionado=False)
-    caminho.adiciona_arestas({(sw1, pc1)})
-    caminho.adiciona_arestas({(sw1, pc2)})
-    caminho.adiciona_arestas({(sw1, sw2)})
-    caminho.adiciona_arestas({(sw2, pc3)})
-    caminho.adiciona_arestas({(sw2, pc4)})
-    pc1.adicionar_tabela_arp(hash(pc2.ip), pc2.mac)
-    pc4.getMac(hash(pc3.ip), caminho)
+    for i, palavra in enumerate(lista_computadores):
+        globals()['pc' + str(i)] = palavra
+    for i, palavra in enumerate(lista_switches):
+        globals()['sw' + str(i)] = palavra
+
+    caminho.adiciona_arestas({((sw0, pc0))})
+    caminho.adiciona_arestas({((sw0, pc1))})
+    caminho.adiciona_arestas({((sw0, pc2))})
+    caminho.adiciona_arestas({((sw0, pc3))})
+    caminho.adiciona_arestas({((sw0, sw1))})
+    caminho.adiciona_arestas({((sw1, pc4))})
+    caminho.adiciona_arestas({((sw1, pc5))})
+    caminho.adiciona_arestas({((sw1, pc6))})
+    caminho.adiciona_arestas({((sw1, pc7))})
+
+    pc6.getMac(hash(pc2.ip), caminho)
+    pc0.getMac(hash(pc3.ip), caminho)
 except AssertionError as erro:
     print(erro)

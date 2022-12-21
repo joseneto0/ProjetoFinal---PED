@@ -5,10 +5,10 @@ from time import sleep
 from caminho import *
 
 class Dispositivos:
-    def __init__(self, ip, mac, identificador):
+    def __init__(self, identificador, ip, mac):
+        self.identificador = identificador
         self.ip = ip
         self.mac = mac
-        self.identificador = identificador
 
     @property
     def ip(self):
@@ -59,8 +59,8 @@ class Dispositivos:
         return str(self)
 
 class Computador(Dispositivos):
-    def __init__(self, ip, mac, identificador):
-        super().__init__(ip, mac, identificador)
+    def __init__(self, identificador, ip, mac):
+        super().__init__(identificador, ip, mac)
         self.tabela_arp = TabelaHash(30)
 
     @property
@@ -78,15 +78,16 @@ class Computador(Dispositivos):
     
     def getMac(self, ip, grafo):
         if self.tabela_arp.contains(ip) == True:
-            return f'MAC: {self.tabela_arp.get(ip)}'
+            print(f'MAC: {self.tabela_arp.get(ip)}')
+            return 
         else:
             visitados, fila = set(), [self]
             while fila:
                 vertice = fila.pop(0)
-                print(f'Resposta de: ({vertice}) bytes=32 TTL=52')
+                print(f'Resposta de: {vertice.ip} bytes=32 Host: {vertice}')
                 sleep(1)
                 if hash(vertice.ip) == ip:
-                    print(f'IP encontrado no ({vertice})')
+                    print(f'IP encontrado no {vertice}')
                     if self.tabela_arp.contains(hash(ip)) == False:
                         self.adicionar_tabela_arp(hash(ip), vertice.mac)
                     return
@@ -100,8 +101,8 @@ class Computador(Dispositivos):
         return hash(self.ip)
 
 class Switch(Dispositivos):
-    def __init__(self, ip, mac, identificador, qtd_portas=24):
-        super().__init__(ip, mac, identificador)
+    def __init__(self, identificador, ip, mac, qtd_portas=24):
+        super().__init__(identificador, ip, mac)
         self.qtd_portas = qtd_portas
         self.tabela_roteamento = TabelaHash(60)
         self.porta_atual = 1

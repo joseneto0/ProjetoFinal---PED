@@ -1,25 +1,20 @@
 import csv
+from classes import Computador, Switch
 
-computador = []
-switch = []
-with open('ProjetoFinal-PED/computador.csv') as csv_file:
-    csv_compu = csv.reader(csv_file, delimiter=';')
-    
-    next(csv_compu, None)  # pula os cabeçalhos
-    for row in csv_compu:
-        computadores = dict()
-        computadores['ip'] = row[0]
-        computadores['nome'] = row[1]
-        computadores['mac'] = row[2]
-        computadores['tabela_arp'] = row[3]
-        computador.append(computadores)
+lista_computadores = []
+with open('dispositivos.csv', 'r') as computadores:
+        comp = computadores.readlines()
+        for c in comp[1:]:
+            if 'computador' in c:
+                comp_atual = c.split(',')
+                comp_atual = comp_atual[1:]
+                lista_computadores.append(Computador(*comp_atual))
 
-    with open('ProjetoFinal-PED/switch.csv') as csv_files:
-        csv_switch = csv.reader(csv_files, delimiter=';')
-        next(csv_switch, None)
-        for rows in csv_switch:
-            switchs = dict()
-            switchs['ip'] = rows[0]
-            switchs['mac'] = rows[1]
-            switchs['tabela_roteamento'] = rows[2]
-            switch.append(switchs)
+lista_switches = []
+with open('dispositivos.csv', 'r') as switches:
+        switch = switches.readlines()
+        for s in switch[1:]:
+            if 'switch' in s:
+                switch_atual = s.split(',')
+                switch_atual = switch_atual[1:]
+                lista_switches.append(Switch(*switch_atual))

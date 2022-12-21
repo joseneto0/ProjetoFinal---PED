@@ -28,7 +28,6 @@ class TabelaHash:
         Adiciona um par chave/valor à tabela hash
         '''
         slot = self.hash(key)
-        print(f'key {key} mapeada ao slot {slot}')
         for entry in self.table[slot]:
             if key == entry.key:
                 print(f'{key} já se encontra na tabela')

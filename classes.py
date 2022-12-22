@@ -52,6 +52,11 @@ class Dispositivos:
         else:
             return False
 
+    def showRunning(self):
+        print(f'Nome: {self.identificador}')
+        print(f'IP: {self.ip}')
+        print(f'MAC: {self.mac}')
+
     def __str__(self):
         return str(self.identificador)
 
@@ -75,10 +80,10 @@ class Computador(Dispositivos):
         assert self.Validar_MAC(mac) == True, 'MAC Inválido'
         assert self.tabela_arp.contains(ip) == False, 'IP já vinculado a um endereço MAC'
         return self.tabela_arp.put(ip, mac)
-    
+        
     def getMac(self, ip, grafo):
-        if self.tabela_arp.contains(ip) == True:
-            print(f'MAC: {self.tabela_arp.get(ip)}')
+        if self.tabela_arp.contains(hash(ip)) == True:
+            print(f'MAC: {self.tabela_arp.get(hash(ip))}')
             return 
         else:
             visitados, fila = set(), [self]
@@ -96,6 +101,7 @@ class Computador(Dispositivos):
                     if vizinho not in visitados:
                         visitados.add(vizinho)
                         fila.append(vizinho)
+            print('IP não encontrado na rede :c')
 
     def __hash__(self):
         return hash(self.ip)

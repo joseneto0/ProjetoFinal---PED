@@ -9,8 +9,8 @@ class Entry:
         self.key = entryKey
         self.value = entryValue
         
-    def __str__( self ):
-        return "(" + str( self.key ) + ", " + str( self.value ) + ")"
+    def __str__(self):
+        return f"{self.key}: {self.value}"
  
 class TabelaHash:
     def __init__(self, size=10):

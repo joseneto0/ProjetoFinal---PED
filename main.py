@@ -18,6 +18,7 @@ try:
     caminho.adiciona_arestas({((sw0, pc2))})
     caminho.adiciona_arestas({((sw0, pc3))})
     caminho.adiciona_arestas({((sw0, sw1))})
+    caminho.adiciona_arestas({((sw2, sw3))})
     caminho.adiciona_arestas({((sw1, pc4))})
     caminho.adiciona_arestas({((sw1, pc5))})
     caminho.adiciona_arestas({((sw1, pc6))})
@@ -36,6 +37,8 @@ try:
         ''')
         n = int(input('Digite a sua opção: '))
         if n == 7:
+            print()
+            print("As configurações foram concluída com sucesso!")
             break
 
         elif n == 1:

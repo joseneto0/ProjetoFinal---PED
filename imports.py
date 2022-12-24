@@ -2,7 +2,7 @@ import csv
 from classes import Computador, Switch
 
 lista_computadores = []
-with open('dispositivos.csv', 'r') as computadores:
+with open('ProjetoFinal-PED/dispositivos.csv', 'r') as computadores:
         comp = computadores.readlines()
         for c in comp[1:]:
             if 'computador' in c:
@@ -11,7 +11,7 @@ with open('dispositivos.csv', 'r') as computadores:
                 lista_computadores.append(Computador(*comp_atual))
 
 lista_switches = []
-with open('dispositivos.csv', 'r') as switches:
+with open('ProjetoFinal-PED/dispositivos.csv', 'r') as switches:
         switch = switches.readlines()
         for s in switch[1:]:
             if 'switch' in s:

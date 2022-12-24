@@ -53,6 +53,7 @@ class Dispositivos:
             return False
 
     def showRunning(self):
+        print()
         print(f'Nome: {self.identificador}')
         print(f'IP: {self.ip}')
         print(f'MAC: {self.mac}')

@@ -45,7 +45,7 @@ try:
             print(*lista_computadores)
             print('Selecione o seu computador: [inteiro - Ex: 0 = PC0] ')
             comp = int(input())
-            print(lista_computadores[comp].tabela_arp)
+            print(lista_computadores[comp].identificador, lista_computadores[comp].tabela_arp)
 
         elif n == 2:
             print(*lista_switches)
